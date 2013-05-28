@@ -1,0 +1,138 @@
+<!Doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+        <script type="text/javascript" src="js/jquery.geocomplete.js"></script>
+        <script type="text/javascript" src="js/colorbox/jquery.colorbox.js"></script>
+        <link rel="stylesheet" type="text/css" href="js/colorbox/colorbox.css" />
+        <style>
+            form {
+                margin: 70px; 
+                background-color: #F8F5E9; 
+                border: 2px #DE7A00 solid; 
+                padding: 30px;
+                width: 300px;
+            }
+        </style>
+    </head>
+    <body>
+        <form action="" method="post">
+
+            <table>
+                <tr>
+                    <th>State : </th>
+                    <td><input type="text" name="state" id="state" placeholder="State" /></td>
+                </tr>
+                <tr>
+                    <th>City : </th>
+                    <td><input type="text" name="city" id="city" placeholder="City" /></td>
+                </tr>
+                <tr>
+                    <th>Address : </th>
+                    <td><input type="text" name="address" id="address" placeholder="Address" /></td>
+                </tr>
+                <tr>
+                    <th>Latitude : </th>
+                    <td>
+                        <input readonly="readonly" 
+                               type="text" 
+                               data-geo="lat" 
+                               name="blat" 
+                               id="blat" 
+                               placeholder="Latitude" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Longitude : </th>
+                    <td>
+                        <input readonly="readonly" 
+                               type="text" 
+                               data-geo="lng" 
+                               name="blong" 
+                               id="blong" 
+                               placeholder="Longitude" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <td><button class="gmapbtn">Locate</button></td>
+                </tr>
+            </table>
+
+            <div>
+                <!-- google map container -->
+                <input id="geocomplete" type="hidden" value="" />
+                <div id="map_canvas" 
+                     style="margin: -3000px; 
+                     background-color: #BBB; 
+                     height: 400px; 
+                     width: 800px; 
+                     position: absolute;">GOOGLE MAP CANVAS</div>
+            </div>
+
+        </form>
+
+        <script>
+            $(function() {
+
+                $('.gmapbtn').click(function() {
+
+                    var address = $('#address').val();
+                    var state = $('#state').val();
+                    var city = $('#city').val();
+
+                    if (state == '') {
+                        alert('Please select your state');
+                        return false;
+                    }
+
+                    if (city == '') {
+                        alert('Please select your city');
+                        return false;
+                    }
+                    
+                    if (address == '') {
+                        alert('Please enter your address');
+                        return false;
+                    }
+
+                    var mylocation = address + ', ' + city + ', ' + state;
+
+                    $("#geocomplete").geocomplete({
+                        map: "#map_canvas",
+                        details: "form",
+                        zoom: 3,
+                        location: mylocation,
+                        types: ["geocode", "establishment"],
+                        detailsAttribute: "data-geo",
+                        markerOptions: {
+                            draggable: true
+                        }
+                    });
+
+                    $("#geocomplete").trigger("geocode");
+                });
+
+                $('.gmapbtn').colorbox({
+                    inline: true,
+                    href: "#map_canvas",
+                    top: '120px',
+                    width: 830,
+                    height: 450,
+                    onOpen: function() {
+                        $('#map_canvas').show().css({
+                            'display': 'block',
+                            'position': 'auto',
+                            'margin': '10px'});
+                    },
+                    onCleanup: function() {
+                        $('#map_canvas').hide();
+                    }
+                });
+
+
+            });
+        </script>
+    </body>
+</html>
